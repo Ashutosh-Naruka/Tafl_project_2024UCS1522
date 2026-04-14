@@ -87,6 +87,19 @@ export default function Sidebar({
           </div>
         </div>
       )}
+
+      {/* Developer Credits Footer */}
+      <div style={{ marginTop: 'auto', paddingTop: '24px', textAlign: 'center', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+        <p style={{ fontSize: '0.9rem', color: 'var(--text-muted)' }}>
+          Developed by
+        </p>
+        <p style={{ fontSize: '1.2rem', fontWeight: 'bold', color: 'var(--accent-blue)', textShadow: '0 0 5px rgba(0, 240, 255, 0.4)', marginTop: '4px' }}>
+          Ashutosh Naruka
+        </p>
+        <p style={{ fontSize: '0.85rem', fontFamily: 'monospace', color: 'rgba(255,255,255,0.4)', marginTop: '4px' }}>
+          Roll no. 2024UCS1522
+        </p>
+      </div>
     </div>
   );
 }
