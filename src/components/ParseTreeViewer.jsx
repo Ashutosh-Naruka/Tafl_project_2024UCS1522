@@ -76,29 +76,41 @@ export default function ParseTreeViewer({ treeData }) {
                   animate={{ x: node.x, y: node.y, scale: 1, opacity: 1 }}
                   transition={{
                     type: "spring",
-                    stiffness: 100,
-                    damping: 12,
+                    mass: 1,
+                    stiffness: 120,
+                    damping: 14,
                     delay: i * 0.05
                   }}
                 >
-                  <circle
-                    r={isTerminal ? 16 : 22}
-                    fill={isEpsilon ? 'transparent' : (isTerminal ? 'var(--panel-bg)' : 'rgba(0, 240, 255, 0.1)')}
-                    stroke={isEpsilon ? 'var(--text-muted)' : (isTerminal ? 'var(--accent-purple)' : 'var(--accent-blue)')}
-                    strokeWidth={isEpsilon ? 1 : 2}
-                    strokeDasharray={isEpsilon ? "4 4" : "none"}
-                    style={{
-                      boxShadow: '0 0 10px rgba(0, 240, 255, 0.5)'
+                  <motion.g
+                    animate={{ y: [0, -4, 0] }}
+                    transition={{
+                      duration: 3 + Math.random(),
+                      repeat: Infinity,
+                      repeatType: "mirror",
+                      ease: "easeInOut",
+                      delay: Math.random() * 2
                     }}
-                  />
-                  <text
-                    className="node-text"
-                    textAnchor="middle"
-                    dy=".3em"
-                    fill={isEpsilon ? 'var(--text-muted)' : '#fff'}
                   >
-                    {node.data.name}
-                  </text>
+                    <circle
+                      r={isTerminal ? 16 : 22}
+                      fill={isEpsilon ? 'transparent' : (isTerminal ? 'var(--panel-bg)' : 'rgba(0, 240, 255, 0.1)')}
+                      stroke={isEpsilon ? 'var(--text-muted)' : (isTerminal ? 'var(--accent-purple)' : 'var(--accent-blue)')}
+                      strokeWidth={isEpsilon ? 1 : 2}
+                      strokeDasharray={isEpsilon ? "4 4" : "none"}
+                      style={{
+                        boxShadow: '0 0 10px rgba(0, 240, 255, 0.5)'
+                      }}
+                    />
+                    <text
+                      className="node-text"
+                      textAnchor="middle"
+                      dy=".3em"
+                      fill={isEpsilon ? 'var(--text-muted)' : '#fff'}
+                    >
+                      {node.data.name}
+                    </text>
+                  </motion.g>
                 </motion.g>
               );
             })}
