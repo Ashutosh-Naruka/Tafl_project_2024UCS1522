@@ -27,30 +27,4 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update a grammar
-router.put('/:id', async (req, res) => {
-  try {
-    const updatedGrammar = await Grammar.findByIdAndUpdate(
-      req.params.id,
-      { $set: req.body },
-      { new: true }
-    );
-    if (!updatedGrammar) return res.status(404).json({ message: 'Grammar not found' });
-    res.json(updatedGrammar);
-  } catch (err) {
-    res.status(400).json({ message: err.message });
-  }
-});
-
-// Delete a grammar
-router.delete('/:id', async (req, res) => {
-  try {
-    const deletedGrammar = await Grammar.findByIdAndDelete(req.params.id);
-    if (!deletedGrammar) return res.status(404).json({ message: 'Grammar not found' });
-    res.json({ message: 'Deleted grammar' });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
 module.exports = router;
