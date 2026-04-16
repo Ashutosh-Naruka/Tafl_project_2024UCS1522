@@ -18,7 +18,7 @@ export default function GrammarLibrary({ onSelectGrammar }) {
   const [newRules, setNewRules] = useState('');
 
   const fetchGrammars = () => {
-    fetch('http://localhost:5001/api/grammars')
+    fetch('https://tafl-project-2024ucs1522.onrender.com/api/grammars')
       .then(res => {
         if (!res.ok) throw new Error('Network response was not ok');
         return res.json();
@@ -43,7 +43,7 @@ export default function GrammarLibrary({ onSelectGrammar }) {
     if (!newName.trim() || !newRules.trim()) return;
 
     try {
-      const res = await fetch('http://localhost:5001/api/grammars', {
+      const res = await fetch('https://tafl-project-2024ucs1522.onrender.com/api/grammars', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
