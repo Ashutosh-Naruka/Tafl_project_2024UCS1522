@@ -200,14 +200,14 @@ export default function App() {
                            <p style={{ position: 'absolute', top: 16, left: 16, zIndex: 10,  color: 'var(--text-muted)', background: 'rgba(0,0,0,0.5)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>Parse Tree 1</p>
                            <ParseTreeViewer treeData={treeData1} />
                         </div>
-                        <DerivationList path={displayedPath1} targetString={targetString} listWidth="240px" />
+                        <DerivationList path={activePaths[0]} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
                       </motion.div>
                       <motion.div layout style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
                         <div style={{ flex: 1, position: 'relative' }}>
                            <p style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'var(--text-muted)', background: 'rgba(0,0,0,0.5)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>Parse Tree 2</p>
                            <ParseTreeViewer treeData={treeData2} />
                         </div>
-                        <DerivationList path={displayedPath2} targetString={targetString} listWidth="240px" />
+                        <DerivationList path={activePaths[1]} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
                       </motion.div>
                     </motion.div>
                   ) : (
@@ -216,7 +216,7 @@ export default function App() {
                          <ParseTreeViewer treeData={treeData} />
                       </motion.div>
                       <motion.div layout style={{ width: '300px', height: '100%' }}>
-                        <DerivationList path={displayedPath} targetString={targetString} listWidth="300px" />
+                        <DerivationList path={activePath} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="300px" />
                       </motion.div>
                     </motion.div>
                   )}

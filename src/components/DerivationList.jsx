@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { ArrowDown } from 'lucide-react';
 
-export default function DerivationList({ path, targetString, listWidth = '300px' }) {
+export default function DerivationList({ path, currentStep, onStepClick, targetString, listWidth = '300px' }) {
   if (!path || path.length === 0) return null;
 
   const containerVariants = {
@@ -30,11 +30,23 @@ export default function DerivationList({ path, targetString, listWidth = '300px'
       >
         {path.map((step, index) => {
           const isTarget = index === path.length - 1 && step.str === targetString;
+          const isActive = typeof currentStep !== 'undefined' ? index === currentStep : false;
+          const isFuture = typeof currentStep !== 'undefined' && index > currentStep;
           
           return (
             <motion.div 
               key={`${index}-${step.str}`} 
               variants={itemVariants}
+              onClick={() => onStepClick && onStepClick(index)}
+              style={{
+                cursor: onStepClick ? 'pointer' : 'default',
+                opacity: isFuture ? 0.3 : 1,
+                transform: isActive ? 'scale(1.02)' : 'none',
+                boxShadow: isActive ? '0 0 10px rgba(0, 240, 255, 0.2)' : 'none',
+                borderColor: isActive ? 'var(--accent-blue)' : 'transparent',
+                borderStyle: 'solid',
+                borderWidth: '1px'
+              }}
               className={`derivation-step ${isTarget ? 'target-match' : ''}`}
             >
               {index > 0 && (
