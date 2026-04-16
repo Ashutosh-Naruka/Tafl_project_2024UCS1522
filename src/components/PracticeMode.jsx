@@ -67,9 +67,9 @@ export default function PracticeMode({ grammarObj, targetString }) {
   const isComplete = currentStepIdx === targetPath.length - 1;
 
   return (
-    <div style={{ padding: '40px', display: 'flex', gap: '40px', height: '100%' }}>
+    <div style={{ padding: '40px', display: 'flex', gap: '40px', height: '100%', overflowY: 'auto' }}>
       {/* Derivation Area */}
-      <div style={{ flex: 1, background: 'rgba(0,0,0,0.3)', borderRadius: '16px', padding: '24px', border: '1px solid var(--border-neon)' }}>
+      <div style={{ flex: 1, background: 'rgba(0,0,0,0.3)', borderRadius: '16px', padding: '24px', border: '1px solid var(--border-neon)', overflowY: 'auto' }}>
         <h2 style={{ color: 'var(--accent-purple)', marginBottom: '24px', display: 'flex', justifyContent: 'space-between' }}>
           <span>Derivation</span>
           {isComplete && <span style={{ color: '#00ffaa' }}>Success! 🎉</span>}
