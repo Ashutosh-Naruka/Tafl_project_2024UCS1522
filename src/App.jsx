@@ -23,6 +23,7 @@ export default function App() {
 
   // Animation Stepper State
   const [currentStep, setCurrentStep] = useState(0);
+  const [maxReachedStep, setMaxReachedStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
   // Disambiguation State
@@ -35,6 +36,7 @@ export default function App() {
     setGrammarObj(grammar);
     setHasGenerated(true);
     setCurrentStep(0);
+    setMaxReachedStep(0);
     setIsPlaying(true);
     setDisambigSteps([]);
     setDisambigVisible(false);
@@ -57,6 +59,7 @@ export default function App() {
         const reparsed = parseGrammar(newText);
         setGrammarObj(reparsed);
         setCurrentStep(0);
+        setMaxReachedStep(0);
         setIsPlaying(true);
       }, 1800);
     }, 1400);
@@ -88,6 +91,7 @@ export default function App() {
 
   useEffect(() => {
     setCurrentStep(0);
+    setMaxReachedStep(0);
     setIsPlaying(true);
   }, [derivationType]);
 
@@ -95,7 +99,11 @@ export default function App() {
     if (isPlaying && activePath.length > 0) {
       if (currentStep < activePath.length - 1) {
         const timer = setTimeout(() => {
-          setCurrentStep(c => c + 1);
+          setCurrentStep(c => {
+             const next = c + 1;
+             setMaxReachedStep(m => Math.max(m, next));
+             return next;
+          });
         }, 1200);
         return () => clearTimeout(timer);
       } else {
@@ -107,6 +115,10 @@ export default function App() {
   const displayedPath = activePath.slice(0, currentStep + 1);
   const displayedPath1 = activePaths.length > 0 ? activePaths[0].slice(0, currentStep + 1) : [];
   const displayedPath2 = activePaths.length > 1 ? activePaths[1].slice(0, currentStep + 1) : [];
+  
+  const listDisplayedPath = activePath.slice(0, maxReachedStep + 1);
+  const listDisplayedPath1 = activePaths.length > 0 ? activePaths[0].slice(0, maxReachedStep + 1) : [];
+  const listDisplayedPath2 = activePaths.length > 1 ? activePaths[1].slice(0, maxReachedStep + 1) : [];
   
   const treeData = useMemo(() => {
     if (!grammarObj || displayedPath.length === 0) return null;
@@ -168,30 +180,18 @@ export default function App() {
                    {isPlaying ? <Pause size={16} /> : <Play size={16} fill="currentColor" />}
                  </button>
 
-                 <button onClick={() => { setIsPlaying(false); setCurrentStep(Math.min(activePath.length - 1, currentStep + 1)); }} className="toggle-btn" style={{ padding: '6px' }}>
+                 <button onClick={() => { setIsPlaying(false); const n = Math.min(activePath.length - 1, currentStep + 1); setCurrentStep(n); setMaxReachedStep(m => Math.max(m, n)); }} className="toggle-btn" style={{ padding: '6px' }}>
                    <FastForward size={16} />
                  </button>
                  
-                 <button onClick={() => { setIsPlaying(false); setCurrentStep(activePath.length - 1); }} className="toggle-btn" style={{ padding: '6px' }} title="Skip to End">
+                 <button onClick={() => { setIsPlaying(false); setCurrentStep(activePath.length - 1); setMaxReachedStep(activePath.length - 1); }} className="toggle-btn" style={{ padding: '6px' }} title="Skip to End">
                    <StepForward size={16} />
                  </button>
               </div>
             )}
 
             {hasGenerated && activePath.length > 0 ? (
-              <div style={{ display: 'flex', height: '100%', width: '100%', paddingTop: '60px', position: 'relative' }}>
-                {/* Ambiguous Overlay Warning */}
-                {isAmbiguous && activePaths.length > 1 && (
-                  <motion.div 
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: [1, 0.5, 1], scale: 1 }}
-                    transition={{ repeat: Infinity, duration: 1.5 }}
-                    style={{ position: 'absolute', top: 76, right: '50%', transform: 'translateX(50%)', zIndex: 100, background: 'rgba(255,50,50,0.1)', border: '1px solid #ff4444', color: '#ff4444', padding: '6px 16px', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '8px', boxShadow: '0 0 15px rgba(255,50,50,0.4)', fontWeight: 'bold' }}
-                  >
-                    <AlertTriangle size={18} /> AMBIGUOUS
-                  </motion.div>
-                )}
-
+               <div style={{ display: 'flex', height: '100%', width: '100%', paddingTop: '60px', position: 'relative' }}>
                 <AnimatePresence>
                   {isAmbiguous && activePaths.length > 1 ? (
                     <motion.div layout initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} style={{ display: 'flex', flex: 1, height: '100%' }}>
@@ -200,14 +200,14 @@ export default function App() {
                            <p style={{ position: 'absolute', top: 16, left: 16, zIndex: 10,  color: 'var(--text-muted)', background: 'rgba(0,0,0,0.5)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>Parse Tree 1</p>
                            <ParseTreeViewer treeData={treeData1} />
                         </div>
-                        <DerivationList path={displayedPath1} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
+                        <DerivationList path={listDisplayedPath1} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
                       </motion.div>
                       <motion.div layout style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
                         <div style={{ flex: 1, position: 'relative' }}>
                            <p style={{ position: 'absolute', top: 16, left: 16, zIndex: 10, color: 'var(--text-muted)', background: 'rgba(0,0,0,0.5)', padding: '4px 12px', borderRadius: '20px', border: '1px solid rgba(255,255,255,0.1)' }}>Parse Tree 2</p>
                            <ParseTreeViewer treeData={treeData2} />
                         </div>
-                        <DerivationList path={displayedPath2} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
+                        <DerivationList path={listDisplayedPath2} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="240px" />
                       </motion.div>
                     </motion.div>
                   ) : (
@@ -216,7 +216,7 @@ export default function App() {
                          <ParseTreeViewer treeData={treeData} />
                       </motion.div>
                       <motion.div layout style={{ width: '300px', height: '100%' }}>
-                        <DerivationList path={displayedPath} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="300px" />
+                        <DerivationList path={listDisplayedPath} currentStep={currentStep} onStepClick={(idx) => {setIsPlaying(false); setCurrentStep(idx);}} targetString={targetString} listWidth="300px" />
                       </motion.div>
                     </motion.div>
                   )}
